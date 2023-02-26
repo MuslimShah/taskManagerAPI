@@ -1,4 +1,5 @@
 const express = require('express');
+const connectDB = require('./db/connect')
 const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,6 +24,12 @@ app.use('/api/v1/tasks', tasks);
  * app.patch('api/v1/tasks/:id')   -update a single task
  * app.delete('api/v1/tasks/:id')  -deletes a single task
  * */
-
-
-app.listen(PORT, () => console.log(`connected to port :${PORT}`))
+const start = async() => {
+    try {
+        await connectDB();
+        app.listen(PORT, () => console.log(`connected to port :${PORT}`))
+    } catch (err) {
+        console.log(`cannot connect :error ${err}`);
+    }
+}
+start()

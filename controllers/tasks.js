@@ -39,26 +39,74 @@ exports.CreateTask = async(req, res, next) => {
         }
     }
     /**
-     * when the user request with the url api/v1/tasks then
+     * when the user performs get request with the url api/v1/tasks/:id then
      * getTask controller will be invoked by the router and it 
-     * will fetch single  document from the database and 
-     * return that document to the user in json format
+     * will fetch single  document if exists from the database and 
+     * return that document to the user in json format otherwise it will
+     * return not found message.
      * incase of error catch block will be trigered 
      * which will show specific error to the user in json
      */
 exports.getTask = async(req, res, next) => {
-    try {
-        const taskId = req.params.id;
-        const task = await Task.find({ _id: taskId });
-        res.status(200).json(task)
+        try {
+            const { id: taskId } = req.params;
+            const task = await Task.findOne({ _id: taskId });
+            if (!task) {
+                return res.status(404).json({ msg: `task with ID:${taskId} does not exist` })
+            }
+            res.status(200).json(task)
 
+        } catch (error) {
+            res.status(500).json({ msg: error })
+        }
+    }
+    /**
+     * when the user performs patch request with the url api/v1/tasks/:id then
+     * getTask controller will be invoked by the router and it 
+     * will fetch single  document if exists from the database and 
+     * update that document  otherwise it will
+     * return not found message.
+     * incase of error catch block will be trigered 
+     * which will show specific error to the user in json
+     */
+
+exports.updateTask = async(req, res, next) => {
+    try {
+        const { id: taskId } = req.params;
+        // const task = req.body;
+
+        const task = await Task.findOneAndUpdate({ _id: taskId }, req.body)
+        if (!task) {
+            return res.status(404).json({ msg: `task with ID:${taskId} does not exist` })
+        }
+        res.status(200).json({ status: 'success', msg: 'task updated' })
     } catch (error) {
         res.status(500).json({ msg: error })
     }
+
+
 }
-exports.updateTask = (req, res, next) => {
-    res.send('updateTask')
-}
-exports.deleteTask = (req, res, next) => {
-    res.send('deleteTask')
+
+/**
+ * when the user performs delete request with the url api/v1/tasks/:id then
+ * deleteTask controller will be invoked by the router and it 
+ * will fetch single  document if exists from the database and 
+ * delete that document and will return it to the user otherwise it will
+ * return not found message.
+ * incase of error catch block will be trigered 
+ * which will show specific error to the user in json
+ */
+exports.deleteTask = async(req, res, next) => {
+    try {
+
+        const { id: taskId } = req.params;
+        const task = await Task.findOneAndDelete({ _id: taskId });
+        if (!task) {
+            return res.status(404).json({ msg: `task with ID:${taskId} does not exist` })
+        }
+        res.status(200).json({ msg: `task deleted :`, task })
+    } catch (error) {
+        res.status(500).json({ msg: error })
+    }
+
 }

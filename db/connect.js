@@ -1,9 +1,6 @@
 const mongoose = require('mongoose');
-
-const connectionString = "mongodb+srv://muslimshah:alikhan@cluster0.urwzhpz.mongodb.net/tasks-manager?retryWrites=true&w=majority";
-
 const connectDB = (url) => {
-    return mongoose.connect(connectionString, {
+    return mongoose.connect(url, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,

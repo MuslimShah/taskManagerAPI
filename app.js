@@ -10,14 +10,7 @@ const tasks = require('./routes/tasks');
 //middlewares
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
-
-
-//routes
-app.get('/hello', (req, res) => {
-    res.status(200).send('hello task manager api')
-})
-
-
+//routes middleware
 app.use('/api/v1/tasks', tasks);
 /**
  * app.get('api/v1/tasks')         -get all tasks

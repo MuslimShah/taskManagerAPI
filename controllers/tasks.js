@@ -54,7 +54,7 @@ exports.getTask = async(req, res, next) => {
             if (!task) {
                 return res.status(404).json({ msg: `task with ID:${taskId} does not exist` })
             }
-            res.status(200).json(task)
+            res.status(200).json({ task })
 
         } catch (error) {
             res.status(500).json({ msg: error })
@@ -75,11 +75,14 @@ exports.updateTask = async(req, res, next) => {
         const { id: taskId } = req.params;
         // const task = req.body;
 
-        const task = await Task.findOneAndUpdate({ _id: taskId }, req.body)
+        const task = await Task.findOneAndUpdate({ _id: taskId }, req.body, {
+            new: true,
+            runValidators: true
+        })
         if (!task) {
             return res.status(404).json({ msg: `task with ID:${taskId} does not exist` })
         }
-        res.status(200).json({ status: 'success', msg: 'task updated' })
+        res.status(200).json({ task })
     } catch (error) {
         res.status(500).json({ msg: error })
     }

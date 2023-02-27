@@ -1,5 +1,6 @@
 const Task = require('../models/Tasks');
 const asyncWrapper = require('../util/asyncWrapper')
+const { createCustomError } = require('../errors/custom-error')
 
 /**
  * when the user request with the url api/v1/tasks then
@@ -50,7 +51,8 @@ exports.getTask = asyncWrapper(async(req, res, next) => {
         const { id: taskId } = req.params;
         const task = await Task.findOne({ _id: taskId });
         if (!task) {
-            return res.status(404).json({ msg: `task with ID:${taskId} does not exist` })
+            return next(createCustomError(`task with ID:${taskId} does not exist`, 404))
+
         }
         res.status(200).json({ task })
     })
@@ -71,7 +73,8 @@ exports.updateTask = asyncWrapper(async(req, res, next) => {
         runValidators: true
     })
     if (!task) {
-        return res.status(404).json({ msg: `task with ID:${taskId} does not exist` })
+        return next(createCustomError(`task with ID:${taskId} does not exist`, 404))
+
     }
     res.status(200).json({ task })
 })
@@ -89,7 +92,8 @@ exports.deleteTask = asyncWrapper(async(req, res, next) => {
     const { id: taskId } = req.params;
     const task = await Task.findOneAndDelete({ _id: taskId });
     if (!task) {
-        return res.status(404).json({ msg: `task with ID:${taskId} does not exist` })
+        return next(createCustomError(`task with ID:${taskId} does not exist`, 404))
+
     }
     res.status(200).json({ msg: `task deleted :`, task })
 })
